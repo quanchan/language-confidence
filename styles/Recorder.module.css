@@ -1,0 +1,15 @@
+.recordButton {
+  border-radius: 50%;
+  border: 2px solid black;
+  background-color: red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.recordButton:hover {
+  cursor: pointer;
+}

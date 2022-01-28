@@ -1,0 +1,56 @@
+.wordCards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  max-width: 1440px;
+}
+
+.wordCard {
+  box-shadow: 0 0.25rem 0.75rem 0.2rem rgba(0,0,0,0.2);
+  padding: 1.5rem;
+  margin: 1rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  background-color: white;
+}
+
+.wordLabel {
+  font-size: 1.5rem;
+  color:rgb(14, 65, 177)
+}
+
+.phoneScores {
+  margin-top: 2.5rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.phoneScore {
+  text-align: center;
+  width: 3rem;
+}
+
+.phoneLabel {
+  width: 2.8rem;
+  height: 2.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  margin: 0.1rem;
+  margin-bottom: 0.75rem
+}
+
+.red {
+  background-color: red
+}
+
+.yellow {
+  background-color: rgb(224, 204, 22)
+}
+
+.green {
+  background-color: green
+}
