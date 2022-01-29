@@ -16,7 +16,6 @@ if (typeof window !== 'undefined') {
 }
 
 const Recorder: React.FC<PropsType> = (props: PropsType) => {
-
   const { setAudioBase64 } = props
 
   const [blob, setBlob] = useState<Blob>()
@@ -24,22 +23,6 @@ const Recorder: React.FC<PropsType> = (props: PropsType) => {
   const [url, setUrl] = useState<string>("");
 
   const [isRecording, setIsRecording] = useState<boolean>(false)
-
-  useEffect(() => {
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-
-    const audioContext = new AudioContext();
-
-    const recorder = new RecorderJS(audioContext, {
-    });
-    // Check for audio permission
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(stream => recorder.init(stream))
-      .catch(err => alert("Please allow access to microphone to use this application full functionalities"));
-
-    setRecorder(recorder)
-  }, [])
-
 
   useEffect(() => {
     if (blob) {
@@ -54,14 +37,26 @@ const Recorder: React.FC<PropsType> = (props: PropsType) => {
     }
   }, [blob])
 
-  const startRecording = useCallback(() => {
-    let contentToSpeak = new SpeechSynthesisUtterance("Recording");
-    speechSynthesis.speak(contentToSpeak);
+  const startRecording = useCallback( async () => {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+
+    const audioContext = new AudioContext();
+    audioContext.resume();
+    const recorder = new RecorderJS(audioContext, {
+    });
+    // Check for audio permission
+    await navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => recorder.init(stream))
+      .catch(err => alert("Please allow access to microphone to use this application full functionalities"));
+
+    setRecorder(recorder)
     recorder?.start()
       .then(() => setIsRecording(true));
   }, [recorder])
 
   const stopRecording = useCallback(() => {
+    console.log("CC");
+    
     recorder?.stop()
       .then(({ blob }) => {
         setBlob(blob)
