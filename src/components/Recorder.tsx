@@ -9,17 +9,26 @@ type PropsType = {
   setAudioBase64: (audioBase64: string) => void
 }
 
+let URL: any;
+
+if (typeof window !== 'undefined') {
+  URL = window.URL || window.webkitURL;
+}
+
 const Recorder: React.FC<PropsType> = (props: PropsType) => {
 
   const { setAudioBase64 } = props
 
   const [blob, setBlob] = useState<Blob>()
   const [recorder, setRecorder] = useState<RecorderJS>()
+  const [url, setUrl] = useState<string>("");
 
   const [isRecording, setIsRecording] = useState<boolean>(false)
 
   useEffect(() => {
-    const audioContext = new window.AudioContext();
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+
+    const audioContext = new AudioContext();
 
     const recorder = new RecorderJS(audioContext, {
     });
@@ -57,6 +66,7 @@ const Recorder: React.FC<PropsType> = (props: PropsType) => {
       .then(({ blob }) => {
         setBlob(blob)
         setIsRecording(false)
+        setUrl(URL.createObjectURL(blob))
       });
   }, [recorder])
 
@@ -76,7 +86,7 @@ const Recorder: React.FC<PropsType> = (props: PropsType) => {
       {
         blob && <>
           Your Audio:
-          <audio controls src={URL.createObjectURL(blob)} />
+          <audio controls src={url} />
         </>
       }
     </>
