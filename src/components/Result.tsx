@@ -1,24 +1,21 @@
 import React from 'react';
-import { Word } from '../entities/language-confidence';
-import WordCard from './WordCard';
-import styles from '../../styles/Result.module.css'
+import { AxiosResponse } from "axios";
+import { LanguageConfidenceErrorResponse, LanguageConfidenceResponse, LanguageConfidenceSuccessResponse } from "../entities/language-confidence";
+import SuccessResult from "./SuccessResult";
+import ErrorResult from "./ErrorResult";
 
 type PropsType = {
-  words: Word[]
+  result: AxiosResponse<LanguageConfidenceResponse>;
 }
 
 const Result: React.FC<PropsType> = (props: PropsType) => {
-  const { words } = props;
-  return (
-    <div className={styles.wordCards}>
-      {
-        words.map((word: Word, i: number) => (
-          <WordCard key={i} word={word}
-          />)
-        )
-      }
-    </div>
-  )
+  const { result } = props;
+  const { status, data } = result;
+
+  if (status === 200) {
+    return <SuccessResult data={data as LanguageConfidenceSuccessResponse} />
+  }
+  return <ErrorResult error={data as LanguageConfidenceErrorResponse} />
 }
 
 export default Result;

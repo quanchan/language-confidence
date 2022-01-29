@@ -23,12 +23,14 @@ export type LanguageConfidenceSuccessResponse = {
 }
 
 export type LanguageConfidenceErrorResponse = {
-  detail: {
-    loc: string[],
-    msg: string,
-    type: string
-  }[] | string
+  detail: ErrorDetail
 }
+
+export type ErrorDetail = {
+  loc: string[],
+  msg: string,
+  type: string
+}[] | string
 
 export type Word = {
   label: string,

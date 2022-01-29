@@ -6,6 +6,7 @@ import { checkPronunciation } from '../src/utils/AxiosConfig'
 import Recorder from '../src/components/Recorder'
 import { LanguageConfidenceResponse } from '../src/entities/language-confidence'
 import Result from '../src/components/Result'
+import { AxiosResponse } from 'axios'
 
 const randomContents = [
   "If you spin around three times, you'll start to feel melancholy.",
@@ -25,11 +26,12 @@ const Home: NextPage = () => {
 
   const [audioBase64, setAudioBase64] = useState<string>("");
   const [content, setContent] = useState<string>("")
-  const [scoring, setScoring] = useState<LanguageConfidenceResponse>()
+  const [result, setResult] = useState<AxiosResponse<LanguageConfidenceResponse>>()
+
   const sendCheckPronunciationRequest = useCallback(
     async () => {
       const result = await checkPronunciation(audioBase64, content)
-      setScoring(result)
+      setResult(result)
     }, [audioBase64, content]
   )
 
@@ -50,7 +52,6 @@ const Home: NextPage = () => {
       <Head>
         <title>Language Confidence</title>
         <meta name="description" content="Test English Pronunciation" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.main}>
@@ -70,8 +71,8 @@ const Home: NextPage = () => {
           <button onClick={speakContent}>Play Demo Audio</button>
           <Recorder setAudioBase64={setAudioBase64} />
           {audioBase64 && content && <button onClick={sendCheckPronunciationRequest}>Check pronunciation</button>}
-          {scoring && scoring.words &&
-            <Result words={scoring.words} />
+          {result &&
+            <Result result={result} />
           }
         </>
       </main>
