@@ -10,9 +10,11 @@ type PropsType = {
 }
 
 let URL: any;
-
+let AudioContext: any;
 if (typeof window !== 'undefined') {
+  // pick correct API
   URL = window.URL || window.webkitURL;
+  AudioContext = window.AudioContext || (window as any).webkitAudioContext;
 }
 
 const Recorder: React.FC<PropsType> = (props: PropsType) => {
@@ -21,7 +23,6 @@ const Recorder: React.FC<PropsType> = (props: PropsType) => {
   const [blob, setBlob] = useState<Blob>()
   const [recorder, setRecorder] = useState<RecorderJS>()
   const [url, setUrl] = useState<string>("");
-
   const [isRecording, setIsRecording] = useState<boolean>(false)
 
   useEffect(() => {
@@ -37,26 +38,27 @@ const Recorder: React.FC<PropsType> = (props: PropsType) => {
     }
   }, [blob])
 
-  const startRecording = useCallback( async () => {
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+  const startRecording = useCallback(async () => {
+    if (!recorder) {
+      const audioContext = new AudioContext();
+      const recorder = new RecorderJS(audioContext, {
+      });
+      // Check for audio permission
+      await navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => recorder.init(stream))
+        .catch(err => alert("Please allow access to microphone to use this application full functionalities"));
 
-    const audioContext = new AudioContext();
-    audioContext.resume();
-    const recorder = new RecorderJS(audioContext, {
-    });
-    // Check for audio permission
-    await navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(stream => recorder.init(stream))
-      .catch(err => alert("Please allow access to microphone to use this application full functionalities"));
+      setRecorder(recorder)
+      recorder.start()
+        .then(() => setIsRecording(true));
+    } else {
+      recorder.start()
+        .then(() => setIsRecording(true));
+    }
 
-    setRecorder(recorder)
-    recorder?.start()
-      .then(() => setIsRecording(true));
   }, [recorder])
 
   const stopRecording = useCallback(() => {
-    console.log("CC");
-    
     recorder?.stop()
       .then(({ blob }) => {
         setBlob(blob)
@@ -78,8 +80,10 @@ const Recorder: React.FC<PropsType> = (props: PropsType) => {
           {isRecording ? <BsSquareFill /> : <AiFillAudio />}
         </IconContext.Provider>
       </div>
+      <p>{isRecording ? "Recording..." : ""}</p>
+      <br />
       {
-        blob && <>
+        url && <>
           Your Audio:
           <audio controls src={url} />
         </>

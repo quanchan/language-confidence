@@ -1,7 +1,7 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { LanguageConfidenceErrorResponse, LanguageConfidenceResponse } from '../entities/language-confidence';
 
-export const checkPronunciation = async (audioBase64: string, content: string): Promise<LanguageConfidenceResponse | undefined> => {
+export const checkPronunciation = async (audioBase64: string, content: string): Promise<AxiosResponse<LanguageConfidenceResponse> | undefined> => {
   const request = {
     method: 'POST' as const,
     url: process.env.NEXT_PUBLIC_RAPID_API_URL || '',
@@ -19,7 +19,7 @@ export const checkPronunciation = async (audioBase64: string, content: string): 
 
   try {
     const response = await axios.request(request)
-    return response.data
+    return response
   } catch (error) {
     console.log(error)
   };
