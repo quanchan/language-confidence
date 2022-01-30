@@ -20,7 +20,7 @@ COPY ./ ./
 RUN npm run build
 
 # Expose the listening port
-EXPOSE 3333
+EXPOSE 5050
 
 # Run container as non-root (unprivileged) user
 # The node user is provided in the Node.js Alpine base image
